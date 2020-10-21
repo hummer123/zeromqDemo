@@ -1,0 +1,1 @@
+/usr/bin/cc  -O1 -Wall -g -fPIC   CMakeFiles/clientMQ.dir/client.c.o  -o ../../../bin/clientMQ  -L/home/hummer123/wangyanpeng/zeroMQ/utils/libzmq -Wl,-rpath,/home/hummer123/wangyanpeng/zeroMQ/utils/libzmq -lzmq 

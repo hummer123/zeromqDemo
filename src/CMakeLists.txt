@@ -1,0 +1,6 @@
+
+MESSAGE(STATUS "===> Build src, ${PROJECT_SOURCE_DIR}")
+
+ADD_SUBDIRECTORY(./server)
+ADD_SUBDIRECTORY(./client)
+# ADD_SUBDIRECTORY(./daemon)

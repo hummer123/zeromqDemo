@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../inc/libzmq/zmq.h
+errno.h
+-
+stddef.h
+-
+stdio.h
+-
+inttypes.h
+-
+stdint.h
+-
+poll.h
+-
+
+/home/hummer123/wangyanpeng/zeroMQ/src/client/client.c
+zmq.h
+-
+stdio.h
+-
+unistd.h
+-
+string.h
+-
+
