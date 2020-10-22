@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/hummer123/wangyanpeng/zeroMQ
+CMAKE_SOURCE_DIR = /home/hummer123/wangyanpeng/zeromqdemo
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/hummer123/wangyanpeng/zeroMQ/build
+CMAKE_BINARY_DIR = /home/hummer123/wangyanpeng/zeromqdemo/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/hummer123/wangyanpeng/zeroMQ/build/CMakeFiles /home/hummer123/wangyanpeng/zeroMQ/build/src/client/CMakeFiles/progress.marks
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hummer123/wangyanpeng/zeroMQ/build/CMakeFiles 0
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/hummer123/wangyanpeng/zeromqdemo/build/CMakeFiles /home/hummer123/wangyanpeng/zeromqdemo/build/src/client/CMakeFiles/progress.marks
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hummer123/wangyanpeng/zeromqdemo/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/clean
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/preinstall
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/preinstall
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/client/CMakeFiles/clientMQ.dir/rule:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/CMakeFiles/clientMQ.dir/rule
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f CMakeFiles/Makefile2 src/client/CMakeFiles/clientMQ.dir/rule
 .PHONY : src/client/CMakeFiles/clientMQ.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ clientMQ: src/client/CMakeFiles/clientMQ.dir/rule
 
 # fast build rule for target.
 clientMQ/fast:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/build
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/build
 .PHONY : clientMQ/fast
 
 client.o: client.c.o
@@ -131,7 +131,7 @@ client.o: client.c.o
 
 # target to build an object file
 client.c.o:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.o
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.o
 .PHONY : client.c.o
 
 client.i: client.c.i
@@ -140,7 +140,7 @@ client.i: client.c.i
 
 # target to preprocess a source file
 client.c.i:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.i
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.i
 .PHONY : client.c.i
 
 client.s: client.c.s
@@ -149,7 +149,7 @@ client.s: client.c.s
 
 # target to generate assembly for a file
 client.c.s:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.s
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(MAKE) -f src/client/CMakeFiles/clientMQ.dir/build.make src/client/CMakeFiles/clientMQ.dir/client.c.s
 .PHONY : client.c.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/hummer123/wangyanpeng/zeroMQ/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/hummer123/wangyanpeng/zeromqdemo/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

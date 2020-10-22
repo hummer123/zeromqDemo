@@ -6,5 +6,5 @@ C_FLAGS =  -O1 -Wall -g -fPIC
 
 C_DEFINES = 
 
-C_INCLUDES = -I/home/hummer123/wangyanpeng/zeroMQ/inc/libzmq 
+C_INCLUDES = -I/home/hummer123/wangyanpeng/zeromqdemo/inc/libzmq -I/home/hummer123/wangyanpeng/zeromqdemo/inc 
 

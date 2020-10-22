@@ -3,4 +3,4 @@
 
 src/server/CMakeFiles/serverMQ.dir/server.c.o
  ../inc/libzmq/zmq.h
- /home/hummer123/wangyanpeng/zeroMQ/src/server/server.c
+ /home/hummer123/wangyanpeng/zeromqdemo/src/server/server.c

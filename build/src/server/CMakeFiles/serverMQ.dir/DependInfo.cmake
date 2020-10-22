@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/hummer123/wangyanpeng/zeroMQ/src/server/server.c" "/home/hummer123/wangyanpeng/zeroMQ/build/src/server/CMakeFiles/serverMQ.dir/server.c.o"
+  "/home/hummer123/wangyanpeng/zeromqdemo/src/server/server.c" "/home/hummer123/wangyanpeng/zeromqdemo/build/src/server/CMakeFiles/serverMQ.dir/server.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

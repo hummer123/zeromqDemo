@@ -25,10 +25,10 @@ BUILD_LIB_OutputSymbol()
 
     for i in `ls -X $INPUT_PATH`
     do
-        objcopy --only-keep-debug $INPUT_PATH/$i $OUTPUT_PATH/$i.sym
-        strip $INPUT_PATH/$i
-        strip --remove-section=.comment $INPUT_PATH/$i
-        objcopy --add-gnu-debuglink=$OUTPUT_PATH/$i.sym $INPUT_PATH/$i
+        $OBJCOPY --only-keep-debug $INPUT_PATH/$i $OUTPUT_PATH/$i.sym
+        $STRIP $INPUT_PATH/$i
+        $STRIP --remove-section=.comment $INPUT_PATH/$i
+		$OBJCOPY --add-gnu-debuglink=$OUTPUT_PATH/$i.sym $INPUT_PATH/$i
     done
 }
 
@@ -47,6 +47,8 @@ cmake ..
 make
 
 # 将工程提供的动态库或可执行程序符号表剔除
-#BUILD_LIB_OutputSymbol $EXEC_DIR          $EXEC_SYM
-#BUILD_LIB_OutputSymbol $PROJ_UTILS_CZMQ   $EXEC_SYM
-#BUILD_LIB_OutputSymbol $PROJ_UTILS_LIBZMQ $EXEC_SYM
+BUILD_LIB_OutputSymbol $EXEC_DIR          $EXEC_SYM
+
+# !!! 因调试期间工程会多次编译，所以这里动态库暂时不剔符号表
+# BUILD_LIB_OutputSymbol $PROJ_UTILS_CZMQ   $EXEC_SYM
+# BUILD_LIB_OutputSymbol $PROJ_UTILS_LIBZMQ $EXEC_SYM

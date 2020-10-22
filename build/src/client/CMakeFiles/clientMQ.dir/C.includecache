@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../inc/demo_comm.h
+
 ../inc/libzmq/zmq.h
 errno.h
 -
@@ -20,7 +22,7 @@ stdint.h
 poll.h
 -
 
-/home/hummer123/wangyanpeng/zeroMQ/src/client/client.c
+/home/hummer123/wangyanpeng/zeromqdemo/src/client/client.c
 zmq.h
 -
 stdio.h
@@ -29,4 +31,6 @@ unistd.h
 -
 string.h
 -
+demo_comm.h
+/home/hummer123/wangyanpeng/zeromqdemo/src/client/demo_comm.h
 

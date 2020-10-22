@@ -2,31 +2,44 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include "demo_comm.h"
 
-#define BUFF_LEN    10
+#define BUFF_LEN    1024
 
-int main()
+int main(int argc, char *argv[])
 {
-    int  request_nbr = 0;
+    int iRet = 0;
+    int  total_temp = 0;
+    int  update_nbr = 0;
     char buffer[BUFF_LEN] = {0};
+    int zipcode = 0;
+    int temperature = 0;
+    int relhumidity = 0;
+    char *pcFilter = (argc > 1) ? argv[1] : "10086";
 
-    printf("Connecting to hello world server...\n");
+    printf("Connecting to PUB...\n");
     void *context = zmq_ctx_new();
-    void *requester = zmq_socket(context, ZMQ_REQ);
-    zmq_connect(requester, "tcp://localhost:5555");
+    void *stSubscriber = zmq_socket(context, ZMQ_SUB);
+    zmq_connect(stSubscriber, "tcp://localhost:5556");
 
-    for (request_nbr = 0; request_nbr != 10; request_nbr++)
+    /* 设置订阅信息 */
+    zmq_setsockopt(stSubscriber, ZMQ_SUBSCRIBE, pcFilter, strlen(pcFilter));
+    for (update_nbr = 0; update_nbr != 100; update_nbr++)
     {
-        printf("Sending Hello %d...\n", request_nbr);
-        zmq_send(requester, "Hello", 5, 0);
+        printf("===> recv msg\n");
         memset(buffer, 0, sizeof(buffer));
-		zmq_recv(requester, buffer, sizeof(buffer), 0);
-        printf("Received %s %d...\n", buffer, request_nbr);
+        iRet = zmq_recv(stSubscriber, buffer, sizeof(buffer), 0);
+        RESULT_ASSERT(-1 != iRet);
+        printf("===> buffer[%s]\n", buffer);
+
+        iRet = sscanf(buffer, "%d %d %d", &zipcode, &temperature, &relhumidity);
+        RESULT_ASSERT(3 == iRet);
+        total_temp += temperature;
     }
+    printf("===> zipCode['%s'], temp[%d]\n", pcFilter, total_temp / update_nbr);
 
-    zmq_close(requester);
+    zmq_close(stSubscriber);
     zmq_ctx_destroy(context);
-
     return 0;
 }
 

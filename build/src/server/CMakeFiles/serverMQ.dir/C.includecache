@@ -20,7 +20,7 @@ stdint.h
 poll.h
 -
 
-/home/hummer123/wangyanpeng/zeroMQ/src/server/server.c
+/home/hummer123/wangyanpeng/zeromqdemo/src/server/server.c
 zmq.h
 -
 stdio.h
@@ -30,5 +30,9 @@ unistd.h
 string.h
 -
 assert.h
+-
+stdlib.h
+-
+time.h
 -
 

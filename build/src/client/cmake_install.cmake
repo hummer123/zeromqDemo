@@ -1,4 +1,4 @@
-# Install script for directory: /home/hummer123/wangyanpeng/zeroMQ/src/client
+# Install script for directory: /home/hummer123/wangyanpeng/zeromqdemo/src/client
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
