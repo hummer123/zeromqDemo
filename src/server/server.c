@@ -1,10 +1,5 @@
-#include <zmq.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <time.h>
+#include "demo_comm.h"
+
 
 #define BUFF_LEN    128
 
@@ -14,37 +9,40 @@ int main()
     int iMajor = 0;
     int iMinor = 0;
     int iPatch = 0; 
-    int iRet = 0;
-    int zipcode = 0;
-    int temperature = 0;
-    int relhumidity = 0;
+    int rc = 0;
+    zmq_msg_t stPubMsg;
 
     zmq_version(&iMajor, &iMinor, &iPatch);
     printf("====> ZMQ Version: %d.%d.%d\n", iMajor, iMinor, iPatch);
 
-    void *context = zmq_ctx_new();
-    void *stPublisher = zmq_socket(context, ZMQ_PUB);
-    iRet = zmq_bind(stPublisher, "tcp://*:5556");
-    assert(0 == iRet);
-    //iRet = zmq_bind(stPublisher, "ipc://weather.ipc");
-    //assert(0 == iRet);
+    void *pvContext = zmq_ctx_new();
+    void *pvPublisher = zmq_socket(pvContext, ZMQ_PUB);
+    rc = zmq_bind(pvPublisher, "tcp://*:5555");
+    assert(0 == rc);
 
-    srand((unsigned)time(NULL));
     while(1)
     {
-        zipcode     = rand() % 10 + 10080;
-        temperature = rand() % 200;
-        relhumidity = rand() % 50;
+        zmq_msg_init_data(&stPubMsg, "A", strlen("A"), NULL, NULL);
+        zmq_msg_send(&stPubMsg, pvPublisher, ZMQ_SNDMORE);
+        zmq_msg_close(&stPubMsg);
+        zmq_msg_init_data(&stPubMsg, "we don't want to see this", strlen("we don't want to see this"), NULL, NULL);
+        zmq_msg_send(&stPubMsg, pvPublisher, 0);
+        zmq_msg_close(&stPubMsg);
 
-        memset(buffer, 0, sizeof(buffer));
-        snprintf(buffer, sizeof(buffer), "%05d %d %d", zipcode, temperature, relhumidity);
-        zmq_send(stPublisher, buffer, strlen(buffer), 0);
-        printf("===> send[%s]\n", buffer);
 
-        usleep(1000 * 100);
+        zmq_msg_init_data(&stPubMsg, "B", strlen("B"), NULL, NULL);
+        zmq_msg_send(&stPubMsg, pvPublisher, ZMQ_SNDMORE);
+        zmq_msg_close(&stPubMsg);
+        zmq_msg_init_data(&stPubMsg, "we would like to see this", strlen("we would like to see this"), NULL, NULL);
+        zmq_msg_send(&stPubMsg, pvPublisher, 0);
+        zmq_msg_close(&stPubMsg);
+
+        usleep(1000 * 100);        
+        printf("\n");
     }
-    zmq_close(stPublisher);
-    zmq_ctx_destroy(context);
+
+    zmq_close(pvPublisher);
+    zmq_ctx_destroy(pvContext);
 
     return 0;
 }

@@ -2,6 +2,18 @@
 
 zeroMQ demo 包含libzmq 和 czmq
 
+**支持的绑定关系 : **
+
+- PUB - SUB
+- REQ - REP
+- REQ - ROUTER
+- DEALER - REP
+- DEALER - ROUTER
+- DEALER - DEALER
+- ROUTER - ROUTER
+- PUSH - PULL
+- PAIR - PAIR
+
 
 
 ### 一、支持的协议：
@@ -61,5 +73,64 @@ zeroMQ demo 包含libzmq 和 czmq
 >1. 订阅端 ZMQ_SUB 必须使用zmq_setsockopt()方法来设置订阅的内容，如果不设置那么什么消息也收不到。
 >
 >d
+>
+>
+
+----
+
+### 五、关于多帧消息的发送与接收：
+
+>**发送：**
+>
+>> ```
+>> zmq_msg_send(&msg, socket, ZMQ_SNDMORE);
+>> ...
+>> zmq_msg_send(&msg, socket, ZMQ_SNDMORE);
+>> ...
+>> zmq_msg_send(&msg, socket, 0);	// 最后一帧
+>> ```
+>
+>**接收（单帧or多帧均适用）：**
+>
+>> ```
+>> int imore = 0;
+>> size_t moreSize = sizeof(imore);
+>> while (1)
+>> {
+>> 	zmq_msg_t msg;
+>> 	zmq_msg_init(&msg);
+>> 	zmq_msg_recv(&msg, socket, 0);
+>> 	...
+>> 	zmq_msg_close(&msg);
+>> 	
+>> 	#if 1
+>> 	if (!zmq_msg_more(&msg))
+>> 	{
+>> 		break;
+>> 	}
+>> 	#else
+>> 	zmq_getsocketopt(socket, ZMQ_RCVMORE, &imore, &moreSize);
+>> 	if (!imore)
+>> 	{
+>> 		break;
+>> 	}
+>> 	#endif
+>> 	
+>> }
+>> ```
+>>
+>> 
+
+
+
+### 六、内置转发代理：
+
+>ZMQ 三种内置转发代理功能：
+>
+>* QUEUE             --- 可用于 **请求-应答** 代理服务；
+>* FORWARDER   --- 可用于 **发布-订阅** 代理服务；
+>* STREAMER       --- 可用于 **管道模式** 代理服务;
+>
+>
 >
 >

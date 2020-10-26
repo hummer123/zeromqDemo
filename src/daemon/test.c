@@ -1,32 +1,36 @@
-#include <zmq.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
+#include "demo_comm.h"
 
-
-int main
+int main()
 {
-    void *context = zmq_ctx_new();
-    void *responder = zmq_socket(context, ZMQ_REP);
-    zmq_bind(responder, "tcp://*:555");
+    zmq_msg_t stMsg;
+    void *pvContext = zmq_ctx_new();
 
-    while(1)
-    {
-        zmq_msg_t request;
-        zmq_msg_init(&request);
-        zmq_recv(responder, &request, 0);
-        printf("recv: %s\n", request.data);
-        zmq_msg_close(&request);
+    void *sink = zmq_socket(pvContext, ZMQ_ROUTER);
+    zmq_bind(sink, "inproc://example.inp");
 
-        sleep(1);
+    void *annoymous = zmq_socket(pvContext, ZMQ_REQ);
+    zmq_connect(annoymous, "inproc://example.inp");
 
-        zmq_msg_t reply;
-        zmq_msg_init_size(&reply, 5);
-        memcpy(zmq_msg_data(&reply), "world", 5);
-        zmq_send(responder, &reply, 0);
-        zmq_msg_close(&reply);
-    }
+    zmq_msg_init_data(&stMsg, "ROUTER uses a generated UUID", 
+                        strlen("ROUTER uses a generated UUID"), NULL, NULL);
+    zmq_msg_send(&stMsg, annoymous, 0);
+    s_dump(sink);
+    zmq_msg_close(&stMsg);
 
-    zmq_close(&responder);
-    zmq_ctx_destroy(context);
+    void *indentfied = zmq_socket(pvContext, ZMQ_REQ);
+    zmq_setsockopt(indentfied, ZMQ_IDENTITY, "HELLO", strlen("HELLO"));
+    zmq_connect(indentfied, "inproc://example.inp");
+    
+    zmq_msg_init_data(&stMsg, "ROUTER socket uses REQ's socket identity", 
+                        strlen("ROUTER socket uses REQ's socket identity"), NULL, NULL);
+    zmq_msg_send(&stMsg, indentfied, 0);
+    s_dump(sink);
+    zmq_msg_close(&stMsg);
+
+    zmq_close(sink);
+    zmq_close(annoymous);
+    zmq_close(indentfied);
+    zmq_ctx_destroy(pvContext);
+
+    return 0;
 }

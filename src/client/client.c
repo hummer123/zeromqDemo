@@ -1,45 +1,46 @@
-#include <zmq.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
 #include "demo_comm.h"
 
 #define BUFF_LEN    1024
 
-int main(int argc, char *argv[])
+int main()
 {
     int iRet = 0;
-    int  total_temp = 0;
-    int  update_nbr = 0;
     char buffer[BUFF_LEN] = {0};
-    int zipcode = 0;
-    int temperature = 0;
-    int relhumidity = 0;
-    char *pcFilter = (argc > 1) ? argv[1] : "10086";
+    zmq_msg_t stSubAddr;
+    zmq_msg_t stSubMsg;
 
     printf("Connecting to PUB...\n");
-    void *context = zmq_ctx_new();
-    void *stSubscriber = zmq_socket(context, ZMQ_SUB);
-    zmq_connect(stSubscriber, "tcp://localhost:5556");
+    void *pvContext = zmq_ctx_new();
+    void *pvSubscriber = zmq_socket(pvContext, ZMQ_SUB);
+    zmq_connect(pvSubscriber, "tcp://localhost:5555");
+    zmq_setsockopt(pvSubscriber, ZMQ_SUBSCRIBE, "B", strlen("B"));
 
-    /* 设置订阅信息 */
-    zmq_setsockopt(stSubscriber, ZMQ_SUBSCRIBE, pcFilter, strlen(pcFilter));
-    for (update_nbr = 0; update_nbr != 100; update_nbr++)
+    for (; ;)
     {
-        printf("===> recv msg\n");
-        memset(buffer, 0, sizeof(buffer));
-        iRet = zmq_recv(stSubscriber, buffer, sizeof(buffer), 0);
-        RESULT_ASSERT(-1 != iRet);
-        printf("===> buffer[%s]\n", buffer);
+        zmq_msg_init(&stSubAddr);
+        zmq_msg_recv(&stSubAddr, pvSubscriber, 0);
+        printf("===> Recv[%s][%lu]\n", (char *)zmq_msg_data(&stSubAddr), zmq_msg_size(&stSubAddr));
 
-        iRet = sscanf(buffer, "%d %d %d", &zipcode, &temperature, &relhumidity);
-        RESULT_ASSERT(3 == iRet);
-        total_temp += temperature;
+        if (zmq_msg_more(&stSubAddr))
+        {
+            printf("===> have more msg\n");
+            zmq_msg_init(&stSubMsg);
+            zmq_msg_recv(&stSubMsg, pvSubscriber, 0);
+        }
+        printf("===> addr[%s][%lu] - [%s]\n", 
+                    (char *)zmq_msg_data(&stSubAddr),
+                    zmq_msg_size(&stSubAddr), 
+                    (char *)zmq_msg_data(&stSubMsg));
+
+        zmq_msg_close(&stSubMsg);
+        zmq_msg_close(&stSubAddr);
+
+        printf("\n");
     }
-    printf("===> zipCode['%s'], temp[%d]\n", pcFilter, total_temp / update_nbr);
 
-    zmq_close(stSubscriber);
-    zmq_ctx_destroy(context);
+    zmq_close(pvSubscriber);
+    zmq_ctx_destroy(pvContext);
+
     return 0;
 }
 
