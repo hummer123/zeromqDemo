@@ -1,45 +1,28 @@
 #include "demo_comm.h"
 
-#define BUFF_LEN    1024
 
 int main()
 {
     int iRet = 0;
-    char buffer[BUFF_LEN] = {0};
-    zmq_msg_t stSubAddr;
-    zmq_msg_t stSubMsg;
+    int iReqNum = 0;
+    char *pcData = NULL;
 
-    printf("Connecting to PUB...\n");
-    void *pvContext = zmq_ctx_new();
-    void *pvSubscriber = zmq_socket(pvContext, ZMQ_SUB);
-    zmq_connect(pvSubscriber, "tcp://localhost:5555");
-    zmq_setsockopt(pvSubscriber, ZMQ_SUBSCRIBE, "B", strlen("B"));
+    printf("client start...\n");
+    void *pvCtx = zmq_ctx_new();
+    void *pvReq = zmq_socket(pvCtx, ZMQ_REQ);
+    iRet = zmq_connect(pvReq, "tcp://localhost:5555");
+    assert(0 == iRet);
 
-    for (; ;)
+    for (iReqNum = 0; iReqNum < 1; iReqNum++)
     {
-        zmq_msg_init(&stSubAddr);
-        zmq_msg_recv(&stSubAddr, pvSubscriber, 0);
-        printf("===> Recv[%s][%lu]\n", (char *)zmq_msg_data(&stSubAddr), zmq_msg_size(&stSubAddr));
-
-        if (zmq_msg_more(&stSubAddr))
-        {
-            printf("===> have more msg\n");
-            zmq_msg_init(&stSubMsg);
-            zmq_msg_recv(&stSubMsg, pvSubscriber, 0);
-        }
-        printf("===> addr[%s][%lu] - [%s]\n", 
-                    (char *)zmq_msg_data(&stSubAddr),
-                    zmq_msg_size(&stSubAddr), 
-                    (char *)zmq_msg_data(&stSubMsg));
-
-        zmq_msg_close(&stSubMsg);
-        zmq_msg_close(&stSubAddr);
-
-        printf("\n");
+        s_send(pvReq, "REQ send hello");
+        
+        pcData = s_recv(pvReq);
+        free(pcData);
     }
 
-    zmq_close(pvSubscriber);
-    zmq_ctx_destroy(pvContext);
+    zmq_close(pvReq);
+    zmq_ctx_destroy(pvCtx);
 
     return 0;
 }

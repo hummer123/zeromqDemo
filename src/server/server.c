@@ -1,49 +1,82 @@
 #include "demo_comm.h"
+#include "pthread.h"
 
+void *server_rep(void *args)
+{
+    char *pcData = NULL;
+    void *pvContext = zmq_ctx_new();
+    void *pvRep = zmq_socket(pvContext, ZMQ_REP);
+    zmq_connect(pvRep, "ipc://backed.ipc");
 
-#define BUFF_LEN    128
+    while(1)
+    {
+        pcData = s_recv(pvRep);
+        printf("=========> recv: %s\n", pcData);
+        free(pcData);
+
+        s_send(pvRep, "Hello world");
+        sleep(1);
+    }
+
+    zmq_close(pvRep);
+    zmq_ctx_destroy(pvContext);
+    return NULL;
+}
+
 
 int main()
 {
-    char buffer[BUFF_LEN] = {0};
+    int iRet   = 0;
     int iMajor = 0;
     int iMinor = 0;
-    int iPatch = 0; 
-    int rc = 0;
-    zmq_msg_t stPubMsg;
+    int iPatch = 0;
+    int isMore = 0;
+    zmq_msg_t stMsg;
+    pthread_t stPthread;
 
     zmq_version(&iMajor, &iMinor, &iPatch);
     printf("====> ZMQ Version: %d.%d.%d\n", iMajor, iMinor, iPatch);
 
     void *pvContext = zmq_ctx_new();
-    void *pvPublisher = zmq_socket(pvContext, ZMQ_PUB);
-    rc = zmq_bind(pvPublisher, "tcp://*:5555");
-    assert(0 == rc);
+    void *pvDealer = zmq_socket(pvContext, ZMQ_DEALER);
+    void *pvRouter = zmq_socket(pvContext, ZMQ_ROUTER);
+    iRet = zmq_bind(pvDealer, "ipc://backed.ipc");
+    assert(0 == iRet);
+    iRet = zmq_bind(pvRouter, "tcp://*:5555");
+    assert(0 == iRet);
+
+    zmq_pollitem_t items[] = {{pvDealer, 0, ZMQ_POLLIN, 0}, 
+                              {pvRouter, 0, ZMQ_POLLIN, 0}};
+
+    memset(&stPthread, 0, sizeof(stPthread));
+    pthread_create(&stPthread, NULL, server_rep, NULL);
 
     while(1)
     {
-        zmq_msg_init_data(&stPubMsg, "A", strlen("A"), NULL, NULL);
-        zmq_msg_send(&stPubMsg, pvPublisher, ZMQ_SNDMORE);
-        zmq_msg_close(&stPubMsg);
-        zmq_msg_init_data(&stPubMsg, "we don't want to see this", strlen("we don't want to see this"), NULL, NULL);
-        zmq_msg_send(&stPubMsg, pvPublisher, 0);
-        zmq_msg_close(&stPubMsg);
+        iRet = zmq_poll(items, 2, -1);
+        if (-1 == iRet)
+        {
+            break;
+        }
 
+        if (items[0].revents & ZMQ_POLLIN)
+        {
+            printf("------- DEALER 2 ROUTER -------\n");
+            s_forward(pvDealer, pvRouter);
+        }
 
-        zmq_msg_init_data(&stPubMsg, "B", strlen("B"), NULL, NULL);
-        zmq_msg_send(&stPubMsg, pvPublisher, ZMQ_SNDMORE);
-        zmq_msg_close(&stPubMsg);
-        zmq_msg_init_data(&stPubMsg, "we would like to see this", strlen("we would like to see this"), NULL, NULL);
-        zmq_msg_send(&stPubMsg, pvPublisher, 0);
-        zmq_msg_close(&stPubMsg);
-
-        usleep(1000 * 100);        
-        printf("\n");
+        if (items[1].revents & ZMQ_POLLIN)
+        {
+            printf("------- ROUTER 2 DEALER -------\n");
+            s_forward(pvRouter, pvDealer);
+        }
     }
-
-    zmq_close(pvPublisher);
+    
+    zmq_close(pvRouter);
+    zmq_close(pvDealer);
     zmq_ctx_destroy(pvContext);
 
     return 0;
 }
+
 
